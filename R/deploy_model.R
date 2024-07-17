@@ -117,7 +117,7 @@ deploy_model <- function(
     overlap_threshold = 0.7,
     get_metadata = TRUE,
     write_metadata = FALSE,
-    review_threshold = 1.0,
+    review_threshold = 0.8,
     checkpoint_frequency = 10,
     latitude = NA,
     longitude = NA,
@@ -132,7 +132,7 @@ deploy_model <- function(
   
   # compile args into list
   arg_list <- list(
-    data_dir = normalizePath(data_dir, winslash="/"),
+    data_dir = fs::path_norm(data_dir),
     output_dir = output_dir,
     model_type = model_type,
     recursive = recursive,
@@ -170,15 +170,15 @@ deploy_model <- function(
   #-- Prep data
   
   # load inputs
-  file_list <- define_dataset(arg_list$data_dir, arg_list$recursive, file_extensions)
+  file_list <- define_dataset(arg_list$data_dir, arg_list$recursive, arg_list$file_extensions)
   
   # take random sample if sample50=TRUE  
-  if(sample50==TRUE && length(file_list) > 50){
+  if(arg_list$sample50==TRUE && length(file_list) > 50){
     file_list <- sample(file_list, 50)
   }
   
   # set placeholder for predicted bboxes
-  if(write_bbox_csv==TRUE){
+  if(arg_list$write_bbox_csv==TRUE){
     bboxes <- NULL
   }
   
@@ -192,31 +192,29 @@ deploy_model <- function(
   if(!is.null(output_dir)){
     
     # load saved results
-    results <- chkpt_df(output_dir, model_version, "model_predictions")
+    results <- chkpt_df(output_dir, arg_list$model_version, "model_predictions")
     
     # update file list
     if(length(results) > 0) {
-      file_list <- update_img_list(results, model_version, file_list)
+      file_list <- update_img_list(results, arg_list$model_version, file_list)
     }
     
     # load saved bboxes
-    if(write_bbox_csv==TRUE){
-      bboxes <- chkpt_df(output_dir, model_version, "predicted_boxes")
+    if(arg_list$write_bbox_csv==TRUE){
+      bboxes <- chkpt_df(output_dir, arg_list$model_version, "predicted_boxes")
     }
   }
   
   # set output directory
   if(is.null(output_dir)){
-    output_dir <- set_output_dir(data_dir, model_version, recursive, make_plots)
+    output_dir <- set_output_dir(data_dir, arg_list$model_version, arg_list$recursive, arg_list$make_plots)
   }
   
   #############
   #-- Load model
   
-  
   # download model files
-  model_version <- arg_list$model_version
-  folder <- download_models(models=model_version)
+  folder <- download_models(models=arg_list$model_version)
   
   # load label encoder
   label_encoder <- encode_labels(folder)
@@ -230,14 +228,14 @@ deploy_model <- function(
   write_args(arg_list, output_dir)
   
   #define location-restricted labels
-  if (is.na(latitude) & is.na(longitude)) {
+  if (is.na(arg_list$latitude) & is.na(arg_list$longitude)) {
     location <- NULL
   } else {
-    location <- data.frame(longitude=longitude, latitude=latitude)
+    location <- data.frame(longitude=arg_list$longitude, latitude=arg_list$latitude)
   }
   
   if(is.null(location) == FALSE){
-    possible_labels <- encode_locations(location, model_type, label_encoder)
+    possible_labels <- encode_locations(location, arg_list$model_type, label_encoder)
   }
   
   ############
@@ -248,7 +246,7 @@ deploy_model <- function(
   
   # add progress bar
   cat(paste0("\nDeploying model on ", length(file_list), " images. Two warnings will appear; ignore these. 
-             \nResults files are saved every ", checkpoint_frequency, " images in: ", normalizePath(output_dir, winslash="/"), "\n"))
+             \nResults files are saved every ", arg_list$checkpoint_frequency, " images in: ", fs::path_norm(output_dir), "\n"))
   if(make_plots){
     cat(paste0("During deployment, you can optionally view predicted bounding boxes as they are produced."))
   }
@@ -269,7 +267,7 @@ deploy_model <- function(
       
       # define filename
       # filename <- normalizePath(file_list[i], winslash = "/")
-      filename <- file.path(file_list[i])
+      filename <- fs::path_norm(file_list[i])
       
       # load image and convert to model input
       input <- get_model_input(filename)
@@ -281,35 +279,35 @@ deploy_model <- function(
         
         # deploy the model on the image
         pred_df <- eval_one_image(input, filename, label_encoder, 
-                                  overlap_correction, overlap_threshold,
+                                  arg_list$overlap_correction, arg_list$overlap_threshold,
                                   location, possible_labels, model)
         
         # add prediction df to list
         predictions_list[[i]] <- pred_df
         
         # make plots
-        if(make_plots){
+        if(arg_list$make_plots==TRUE){
           # subset by score threshold for plotting
-          pred_df_plot <- pred_df[pred_df$confidence_score >= score_threshold, ]
+          pred_df_plot <- pred_df[pred_df$confidence_score >= arg_list$score_threshold, ]
           
           # plot predictions
-          plot_img_bbox(filename, pred_df_plot, output_dir, data_dir, 
-                        col, lty, lwd, w, h)
+          plot_img_bbox(filename, pred_df_plot, arg_list$output_dir, arg_list$data_dir, 
+                        arg_list$col, arg_list$lty, arg_list$lwd, arg_list$w, arg_list$h)
         }
         
         # write metadata tags
-        if(write_metadata){
-          write_metadata_tags(pred_df = pred_df, model_version = model_version, 
-                              review_threshold = review_threshold)
+        if(arg_list$write_metadata){
+          write_metadata_tags(pred_df = pred_df, model_version = arg_list$model_version, 
+                              review_threshold = arg_list$review_threshold)
         }
       }
  
       # save checkpoint
-      if (i %% checkpoint_frequency == 0) {
+      if (i %% arg_list$checkpoint_frequency == 0) {
         
-        df_out <- save_checkpoint(predictions_list, score_threshold,
-                                  bboxes, output_dir, model_version,
-                                  get_metadata, write_bbox_csv, results, final=F)
+        df_out <- save_checkpoint(predictions_list, arg_list$score_threshold,
+                                  bboxes, output_dir, arg_list$model_version,
+                                  arg_list$get_metadata, arg_list$write_bbox_csv, results, final=F)
 
         cat(paste0("\nResults saved for ", i, " images.\n"))
       }
@@ -329,13 +327,13 @@ deploy_model <- function(
   
   #-- Make Output Files
   
-  df_out <- save_checkpoint(predictions_list, score_threshold,
-                            bboxes, output_dir, model_version,
-                            get_metadata, write_bbox_csv, results, final=T)
+  df_out <- save_checkpoint(predictions_list, arg_list$score_threshold,
+                            bboxes, output_dir, arg_list$model_version,
+                            arg_list$get_metadata, arg_list$write_bbox_csv, results, final=T)
 
   
-  cat(paste0("\nOutput can be found at: \n", normalizePath(output_dir), "\n",
-             "The number of animals predicted in each category in each image is in the file: ", model_version, "_model_predictions.csv\n"))
+  cat(paste0("\nOutput can be found at: \n", fs::path_norm(output_dir), "\n",
+             "The number of animals predicted in each category in each image is in the file: ", arg_list$model_version, "_model_predictions.csv\n"))
   
   
   # return output dataframe
