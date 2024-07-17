@@ -15,14 +15,14 @@ define_dataset <- function(data_dir,
   {
   
   # check that datadir exists
-  if(!dir.exists(data_dir)){
+  if(!fs::dir_exists(data_dir)){
     stop(paste0("data_dir: ", data_dir, " does not exist! Please specify
                 an path that exists on your computer. "))
   }
   
   # list all files in data_dir
-  file_list <- list.files(data_dir,full.names = TRUE,recursive = recursive,
-                          pattern = paste0(file_extensions, collapse="|"), ignore.case = TRUE)
+  file_list <- fs::dir_ls(data_dir, recursive = recursive,
+                          regexp = paste0(file_extensions, collapse="|"), ignore.case = TRUE)
   
   # remove any image files inside prediction folders
   file_list <- file_list[!stringr::str_detect(file_list, "predictions")]

@@ -38,37 +38,9 @@ write_output <- function(full_df) {
   count_df <- dplyr::group_by(count_df, filename, prediction)
   count_df <- dplyr::filter(count_df, confidence_score == min(confidence_score))
   
-  # 
-  # # aggregate predictions by count
-  # min.vals<-stats::aggregate(confidence_in_pred~filename+prediction+certainty,
-  #                            data=full_df[full_df$certainty!="detections_below_score_threshold",],
-  #                            FUN=min)
-  # 
-  # cnt.val<-stats::aggregate(number_predictions~filename+prediction+certainty,
-  #                           data=full_df[full_df$certainty!="detections_below_score_threshold",],
-  #                           FUN=length)  
-  # 
-  # det_df <- cbind.data.frame(min.vals,number_predictions=cnt.val[,"number_predictions"])
-  # det_df <- dplyr::left_join(det_df, full_df, 
-  #                            by = c("filename", "prediciton"), 
-  #                            suffix = c("", ".y"), 
-  #                            multiple = "all")
-  # det_df <- det_df[,colnames(full_df)]
-  # 
-  # full_df_cnt<-rbind.data.frame(det_df, full_df[full_df$certainty=="detections_below_score_threshold",])
-  # # colnames(full_df_cnt) <- c("filename","prediction","confidence_score","count","certainty")
-  
   # remove redundant columns
   count_df <- dplyr::select(count_df, !c("XMin", "YMin", "XMax", "YMax", "number_predictions"))
   count_df <- remove_na(count_df)
-  
-  # # rename count column
-  # colnames(full_df_cnt)[colnames(full_df_cnt) == "number_predictions"] = "count"
-  # 
-  # # assign zero to counts if empty
-  # full_df_cnt <- dplyr::mutate(full_df_cnt,
-  #                              count = ifelse(prediction == "Empty", 0, count))
-  # full_df_cnt[full_df_cnt$prediction=="Empty","count"]<-0
   
   # reorder rows by image name, predicted class
   df_out <-count_df[order(count_df$filename, count_df$prediction),]

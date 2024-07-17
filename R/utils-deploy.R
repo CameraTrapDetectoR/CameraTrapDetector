@@ -94,7 +94,7 @@ verify_args <- function(arg_list) {
 #' @export
 write_args <- function(arg_list, output_dir) {
   # add updated output dir to arg list1
-  arg_list$output_dir <- normalizePath(output_dir, winslash="/")
+  arg_list$output_dir <- fs::path_norm(output_dir)
   
   # convert multiple file extensions to single string
   arg_list$file_extensions <- paste(file_extensions, collapse = ", ")
@@ -103,7 +103,7 @@ write_args <- function(arg_list, output_dir) {
   arg_df <- arg_df <- t(as.data.frame(arg_list))
   
   # write args to txt file
-  write.table(arg_df, file = file.path(output_dir, "/arguments.txt"), 
+  write.table(arg_df, file = fs::path(output_dir, "arguments", ext = "txt"), 
               sep = ": ", col.names = F)
 }
 
@@ -115,7 +115,7 @@ write_args <- function(arg_list, output_dir) {
 #' @export
 load_args <- function(output_dir){
   # read in arguments
-  arg_file <- read.table(file.path(output_dir, "/arguments.txt"), 
+  arg_file <- read.table(fs::path(output_dir, "arguments", ext = "txt"), 
                           sep = ":", col.names = c("arg", "value"))
   
   # convert args to data frame
@@ -145,8 +145,7 @@ load_args <- function(output_dir){
 #' @export
 chkpt_df <- function(output_dir, model_version, typo){
   # check for saved results files
-  chkpt_path <- list.files(output_dir, pattern = paste(model_version, typo, sep = "_"), 
-                           full.names = TRUE, ignore.case = TRUE)
+  chkpt_path <- fs::dir_ls(output_dir, regexp = paste(model_version, typo, sep = "_"), ignore.case = TRUE)
   if(length(chkpt_path) == 0){
     return(NULL)
   } else {
@@ -160,7 +159,7 @@ chkpt_df <- function(output_dir, model_version, typo){
 update_img_list <- function(results, model_version, file_list){
       
     # extract filenames 
-    results_files <- unique(normalizePath(results$filename, winslash = "/"))
+    results_files <- unique(fs::path_real(results$filename))
     
     # filter predictions out of file list
     file_list <- file_list[!file_list %in% results_files]
@@ -193,10 +192,10 @@ save_checkpoint <- function(predictions_list, score_threshold,
   if(write_bbox_csv){
     bbox_df <- write_bbox_df(full_df, bboxes, score_threshold)
     if(final){
-      utils::write.csv(bbox_df, file.path(output_dir, paste(model_version, "predicted_bboxes.csv", sep="_")), 
+      utils::write.csv(bbox_df, fs::path(output_dir, paste(model_version, "predicted_bboxes", sep="_"), ext="csv"), 
                        row.names=FALSE)
     } else{
-      utils::write.csv(bbox_df, file.path(output_dir, paste(model_version, "predicted_bboxes_checkpoint.csv", sep="_")), 
+      utils::write.csv(bbox_df, fs::path(output_dir, paste(model_version, "predicted_bboxes_checkpoint", sep="_"), ext="csv"), 
                        row.names=FALSE)
     }
 
@@ -212,7 +211,7 @@ save_checkpoint <- function(predictions_list, score_threshold,
     meta_df <- remove_na(meta_df)
     # join metadata to results
     df_out <- dplyr::left_join(df_out, meta_df, 
-                               dplyr::join_by(filename == FilePath), 
+                               dplyr::join_by(filename), 
                                suffix = c("", ".y"), keep=FALSE)
     # remove duplicates
     df_out <- dplyr::select(df_out, -ends_with(".y"))
@@ -225,10 +224,10 @@ save_checkpoint <- function(predictions_list, score_threshold,
   
   # save predictions to csv
   if(final){
-    utils::write.csv(df_out, file.path(output_dir, paste(model_version, 'model_predictions.csv', sep="_")), row.names=FALSE)
-    file.remove(file.path(output_dir, paste(model_version, "model_predictions_checkpoint", sep="_")))
+    utils::write.csv(df_out, fs::path(output_dir, paste(model_version, 'model_predictions', sep="_"), ext="csv"), row.names=FALSE)
+    file.remove(fs::path(output_dir, paste(model_version, "model_predictions_checkpoint", sep="_")))
   } else{
-    utils::write.csv(df_out, file.path(output_dir, paste(model_version, 'model_predictions_checkpoint.csv', sep="_")), row.names=FALSE)
+    utils::write.csv(df_out, fs::path(output_dir, paste(model_version, 'model_predictions_checkpoint', sep="_"), ext="csv"), row.names=FALSE)
   }
   
   
@@ -245,19 +244,15 @@ set_output_dir <- function(data_dir, model_version, recursive, make_plots){
   current_time <- paste0("_", datenow, "_", sprintf("%02d", now$hour), 
                          sprintf("%02d", now$min), 
                          sprintf("%02d", round(now$sec)))
-  output_dir <- file.path(data_dir, paste0("predictions_", model_version, current_time))
-  dir.create(output_dir)
+  output_dir <- fs::path(data_dir, paste0("predictions_", model_version, current_time))
+  fs::dir_create(output_dir)
   
   # make recursive directories if needed
   if(recursive && make_plots) {
-    rec_dirs <- list.dirs(data_dir, full.names = FALSE)
+    rec_dirs <- fs::dir_ls(data_dir, type = "directory")
     rec_dirs <- rec_dirs[stringr::str_detect(rec_dirs, "prediction", negate = T)]
-    for(i in 1:length(rec_dirs)){
-      suppressWarnings(
-        dir.create(paste(output_dir, rec_dirs[i], sep="/"))
-      )
+    fs::dir_create(stringr::str_replace_all(rec_dirs, data_dir, output_dir))
     }
-  }
   
   return(output_dir)
 }
@@ -267,7 +262,7 @@ set_output_dir <- function(data_dir, model_version, recursive, make_plots){
 #' @export
 encode_labels <- function(folder) {
   # load label encoder
-  label_encoder <- utils::read.table(file.path(folder, "label_encoder.txt"), 
+  label_encoder <- utils::read.table(fs::path(folder, "label_encoder", ext="txt"), 
                                      sep = ":", col.names = c("label", "encoder"))
   
   # standardize label format

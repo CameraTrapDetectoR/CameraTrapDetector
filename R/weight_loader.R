@@ -17,13 +17,13 @@ weight_loader <- function(folder){
   windows <- ifelse(Sys.info()["sysname"] == "Windows", TRUE, FALSE)
   
   # define path for model weights
-  weights_path <- file.path(paste0(folder, "/model_weights.pth"))
+  weights_path <- fs::path(folder, "model_weights", ext="pth")
   
   # load model weights
   state_dict <- torch::load_state_dict(weights_path)
   
   # define path to model architecture
-  arch_path <- file.path(paste0(folder, "/model_arch.pt"))
+  arch_path <- fs::path(folder, "model_arch", ext="pt")
   
   # initiate the model
   model <- torch::jit_load(arch_path)

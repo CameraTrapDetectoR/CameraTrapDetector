@@ -27,7 +27,8 @@ plot_img_bbox<- function(filename, plot_df, output_dir,
   
   # prop_bbox means that data are from megadetector, not from here, so 
   # things are a little different in the file_list. 
-  filename_full <- dplyr::if_else(file.exists(filename), filename, file.path(data_dir, filename))
+  filename_full <- dplyr::if_else(fs::file_exists(filename), filename, 
+                                  fs::path(data_dir, filename))
   img <- magick::image_read(filename_full)
   img <- magick::image_scale(img, paste0(w, 'x', h, '!'))
   
@@ -39,7 +40,7 @@ plot_img_bbox<- function(filename, plot_df, output_dir,
   }
   
   # substitue output dir for data dir in new filename
-  output_nm <- file.path(stringr::str_replace(filename_full, data_dir, output_dir))
+  output_nm <- fs::path(stringr::str_replace(filename_full, data_dir, output_dir))
   
   # replace file extension with png 
   output_nm <- stringr::str_replace(output_nm, stringr::str_split_i(output_nm, "\\.", -1), "png")

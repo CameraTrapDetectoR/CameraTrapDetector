@@ -38,13 +38,13 @@ download_models <- function(models)
     # define file path depending on model version
     if(grepl("general", model_i, ignore.case = TRUE)) {
       if(grepl("general_v1", model_i, ignore.case = TRUE)){
-        path <- file.path(cache_path, fs::path_file("general_v1_1.zip"))
-        folder <- file.path(cache_path, fs::path_file("general_v1"))
+        path <- fs::path(cache_path, "general_v1_1", ext="zip")
+        folder <- fs::path(cache_path, "general_v1")
         #agdata <- "https://agdatacommons.nal.usda.gov/ndownloader/files/44576746"
         agdata <- "https://bit.ly/4c2Ykz2"
       } else {
-        path <- file.path(cache_path, fs::path_file("general_v2.zip"))
-        folder <- file.path(cache_path, fs::path_file("general_v2"))
+        path <- fs::path(cache_path, "general_v2", ext="zip")
+        folder <- fs::path(cache_path, "general_v2")
         #agdata <- "https://agdatacommons.nal.usda.gov/ndownloader/files/44576752"
         agdata <- "https://bit.ly/4c42iHt"
       }
@@ -52,34 +52,34 @@ download_models <- function(models)
     }
     if(grepl("family", model_i, ignore.case = TRUE)) {
       if(grepl("family_v1", model_i, ignore.case = TRUE)){
-        path <- file.path(cache_path, fs::path_file("family_v1_1.zip"))
-        folder <- file.path(cache_path, fs::path_file("family_v1"))
+        path <- fs::path(cache_path, "family_v1_1", ext="zip")
+        folder <- fs::path(cache_path, "family_v1")
         #agdata <- "https://agdatacommons.nal.usda.gov/ndownloader/files/44576266"
         agdata <- "https://bit.ly/438ZCUU"
       } else {
-        path <- file.path(cache_path, fs::path_file("family_v2.zip"))
-        folder <- file.path(cache_path, fs::path_file("family_v2"))
+        path <- fs::path(cache_path, "family_v2", ext="zip")
+        folder <- fs::path(cache_path, "family_v2")
         #agdata <- "https://agdatacommons.nal.usda.gov/ndownloader/files/44576296"
         agdata <- "https://bit.ly/3T3Yhu1"
       }
       
     }
     if(grepl("pig", model_i, ignore.case = TRUE)) {
-      path <- file.path(cache_path, fs::path_file("pig_v1_0.zip"))
-      folder <- file.path(cache_path, fs::path_file("pig_v1"))
+      path <- fs::path(cache_path, "pig_v1_0", ext="zip")
+      folder <- fs::path(cache_path, "pig_v1")
       #agdata <- "https://agdatacommons.nal.usda.gov/ndownloader/files/44576767"
       agdata <- "https://bit.ly/438zJ7J"
     }
     if(grepl("species", model_i, ignore.case = TRUE)) {
       if(grepl("species_v1", model_i, ignore.case = TRUE)) {
-        path <- file.path(cache_path, fs::path_file("species_v1_1.zip"))
-        folder <- file.path(cache_path, fs::path_file("species_v1"))
+        path <- fs::path(cache_path, "species_v1_1", ext="zip")
+        folder <- fs::path(cache_path, "species_v1")
         #agdata <- "https://agdatacommons.nal.usda.gov/ndownloader/files/44576215"
         agdata <- "https://bit.ly/3T4srgM"
       }
       else {
-        path <- file.path(cache_path, fs::path_file("species_v2_3.zip"))
-        folder <- file.path(cache_path, fs::path_file("species_v2"))
+        path <- fs::path(cache_path, "species_v2_3", ext="zip")
+        folder <- fs::path(cache_path, "species_v2")
         #agdata <- "https://agdatacommons.nal.usda.gov/ndownloader/files/44576230"
         agdata <- "https://bit.ly/ctdv2sp"
       }
@@ -87,12 +87,12 @@ download_models <- function(models)
     }
     
     # unzip the folder if it's in the cache
-    if(file.exists(path)){
+    if(fs::file_exists(path)){
       # unzip the folder
       utils::unzip(zipfile=path, exdir=cache_path)
     }
     
-    if (!dir.exists(folder)){
+    if (!fs::dir_exists(folder)){
       
       #print timeout message only once
       if(i == 1) {

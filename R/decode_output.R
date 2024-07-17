@@ -60,7 +60,7 @@ decode_output <- function(
     pred_df <- dplyr::add_row(pred_df,
                               XMin = 0, YMin = 0, 
                               XMax = 1, YMax = 1, confidence_score = 1,
-                              prediction = "empty")
+                              prediction = "Empty")
   }
 
   return(pred_df)

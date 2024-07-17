@@ -13,10 +13,10 @@
 #' 
 #' @export
 
-runShiny <- function(app="deploy"){
+runShiny <- function(){
   
   # find and launch the app
-  appDir <- system.file("shiny", app, package = "CameraTrapDetectoR")
+  appDir <- fs::path_package("shiny", package = "CameraTrapDetectoR")
   
   shiny::runApp(appDir, display.mode = "normal")
 }

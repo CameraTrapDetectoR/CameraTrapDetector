@@ -46,7 +46,7 @@ generate_sequences <- function(data_dir = NULL,
   
   # get file list from directory
   if(length(data_dir) == 1){
-    if(dir.exists(data_dir)){
+    if(fs::dir_exists(data_dir)){
       file_list <- dataset(data_dir, recursive=TRUE, file_extensions=".jpg")
     }
   }
@@ -54,7 +54,7 @@ generate_sequences <- function(data_dir = NULL,
   # if data_dir is a list of files, keep only unique image files
   if(length(data_dir) > 1){
     # keep actual files, remove duplicates
-    file_list <- unique(data_dir[file.exists(data_dir)])
+    file_list <- unique(data_dir[fs::file_exists(data_dir)])
     # keep only jpg files
     file_list <- file_list[which(!is.na(stringr::str_match(file_list, stringr::regex(".jpg", ignore_case = TRUE))))]
     if(length(file_list) == 0){
