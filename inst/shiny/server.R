@@ -270,7 +270,7 @@ server <- function(input, output) {
           
           # define filename
           # filename <- normalizePath(file_list[i], winslash = "/")
-          filename <- file.path(file_list[i])
+          filename <- fs::path_norm(file_list[i])
           
           # load image and convert to model input
           input <- get_model_input(filename)
@@ -282,44 +282,43 @@ server <- function(input, output) {
             
             # deploy the model on the image
             pred_df <- eval_one_image(input, filename, label_encoder, 
-                                      overlap_correction, overlap_threshold,
+                                      arg_list$overlap_correction, arg_list$overlap_threshold,
                                       location, possible_labels, model)
             
             # add prediction df to list
             predictions_list[[i]] <- pred_df
             
             # make plots
-            if(make_plots){
+            if(arg_list$make_plots==TRUE){
               # subset by score threshold for plotting
-              pred_df_plot <- pred_df[pred_df$confidence_score >= score_threshold, ]
+              pred_df_plot <- pred_df[pred_df$confidence_score >= arg_list$score_threshold, ]
               
               # plot predictions
-              plot_img_bbox(filename, pred_df_plot, output_dir, data_dir, 
-                            col, lty, lwd, w, h)
+              # NOTE: turn this into reactive output for visualization tab
+              plot_img_bbox(filename, pred_df_plot, arg_list$output_dir, arg_list$data_dir, 
+                            arg_list$col, arg_list$lty, arg_list$lwd, arg_list$w, arg_list$h)
             }
             
             # write metadata tags
-            if(write_metadata){
-              write_metadata_tags(pred_df = pred_df, model_version = model_version, 
-                                  review_threshold = review_threshold)
+            if(arg_list$write_metadata){
+              write_metadata_tags(pred_df = pred_df, model_version = arg_list$model_version, 
+                                  review_threshold = arg_list$review_threshold)
             }
           }
           
           # save checkpoint
-          if (i %% checkpoint_frequency == 0) {
+          if (i %% arg_list$checkpoint_frequency == 0) {
             
-            df_out <- save_checkpoint(predictions_list, score_threshold,
+            df_out <- save_checkpoint(predictions_list, arg_list$score_threshold,
                                       bboxes, output_dir, model_version,
                                       get_metadata, write_bbox_csv, results, final=F)
-            
+             
             cat(paste0("\nResults saved for ", i, " images.\n"))
           }
           
           # update progress bar
           shinyWidgets::updateProgressBar(
-            id = "pb", value = i, total = length(file_list),
-            title = paste0(length(file_list)-i, " images left to run.")
-          ) 
+            id = "pb", value = i, total = length(file_list)) 
           
         }# end for loop
         

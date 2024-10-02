@@ -19,7 +19,7 @@ ui <- fluidPage(
               shiny::verbatimTextOutput("data_dir_Display", placeholder = TRUE),
               
               ## model_type
-              shiny::selectInput("model_type", "model_type", 
+              shiny::selectInput("model_type", "model_type", selected = "species_v2",
                                  choices = c("general_v1", "general_v2", "family_v1", "family_v2", 
                                              "species_v1", "species_v2", "pig_only_v1", "pig_only_v2")),
               shinyBS::bsTooltip("model_type", "This defines your model type (taxonomic level) and version.",
@@ -127,8 +127,11 @@ ui <- fluidPage(
               shiny::fluidRow(shiny::column(12, shiny::span(style = "color:red;font-size:125%;", 
                                                             shiny::textOutput("colorWarning")))),
               
-              # console output
+              # place message output
+              br(),
+              shiny::textOutput("message"),
               # shiny::pre(id = "console"),
+              
               br(),
               shinyWidgets::progressBar(id = "pb", value=0, 
                                         title = "Images to Run",
