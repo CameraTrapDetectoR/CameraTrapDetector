@@ -158,7 +158,7 @@ server <- function(input, output) {
       
       #-- Check arguments
       
-      # compile args into list
+      # compile args into list and pass through checks
       arg_list <- shiny::reactive(list(
         data_dir = shiny::renderText(dirname_data_dir()),
         output_dir = shiny::renderText(dirname_output_dir()),
@@ -185,16 +185,16 @@ server <- function(input, output) {
       ))
       
       # pass through checks
-      arg_list <- verify_args(arg_list)
+      args <- verify_args(arg_list())
       
       # look for model arguments in output dir
-      arg_list <- suppressWarnings(tryCatch(arg_list <- load_args(arg_list$output_dir), 
-                                            error = function(e) arg_list))
+      args <- suppressWarnings(tryCatch(arg_list <- load_args(args$output_dir), 
+                                            error = function(e) args))
       
       #-- Prep data
       
       # load inputs
-      file_list <- define_dataset(arg_list$data_dir, arg_list$recursive, arg_list$file_extensions)
+      file_list <- define_dataset(args$data_dir, args$recursive, args$file_extensions)
       
       # take random sample if sample50=TRUE  
       if(as.logical(input$sample50)==TRUE && length(file_list) > 50){
@@ -215,28 +215,28 @@ server <- function(input, output) {
       if(!is.null(output_dir)){
         
         # load saved results
-        results <- chkpt_df(output_dir, arg_list$model_version, "model_predictions")
+        results <- chkpt_df(output_dir, args$model_version, "model_predictions")
         
         # update file list
         if(length(results) > 0) {
-          file_list <- update_img_list(results, arg_list$model_version, file_list)
+          file_list <- update_img_list(results, args$model_version, file_list)
         }
         
         # load saved bboxes
         if(write_bbox_csv==TRUE){
-          bboxes <- chkpt_df(output_dir, arg_list$model_version, "predicted_boxes")
+          bboxes <- chkpt_df(output_dir, args$model_version, "predicted_boxes")
         }
       }
       
       # set output directory
       if(is.null(output_dir)){
-        output_dir <- set_output_dir(input$data_dir, arg_list$model_version, as.logical(arg_list$recursive), as.logical(arg_list$make_plots))
+        output_dir <- set_output_dir(input$data_dir, args$model_version, as.logical(args$recursive), as.logical(args$make_plots))
       }
       
       #-- Load model
       
       # download model files
-      folder <- download_models(models=arg_list$model_version)
+      folder <- download_models(models=args$model_version)
       
       # load label encoder
       label_encoder <- encode_labels(folder)
@@ -246,7 +246,7 @@ server <- function(input, output) {
       model$eval()
       
       #-- Write Arguments to File
-      write_args(arg_list, output_dir)
+      write_args(args, output_dir)
       
       #-- Define location-restricted labels
       if (is.na(input$latitude) & is.na(input$longitude)) {
@@ -256,7 +256,7 @@ server <- function(input, output) {
       }
       
       if(is.null(location) == FALSE){
-        possible_labels <- encode_locations(location, arg_list$model_type, label_encoder)
+        possible_labels <- encode_locations(location, args$model_type, label_encoder)
       }
       
       #-- Make predictions for each image
@@ -282,34 +282,34 @@ server <- function(input, output) {
             
             # deploy the model on the image
             pred_df <- eval_one_image(input, filename, label_encoder, 
-                                      arg_list$overlap_correction, arg_list$overlap_threshold,
+                                      args$overlap_correction, args$overlap_threshold,
                                       location, possible_labels, model)
             
             # add prediction df to list
             predictions_list[[i]] <- pred_df
             
             # make plots
-            if(arg_list$make_plots==TRUE){
+            if(args$make_plots==TRUE){
               # subset by score threshold for plotting
-              pred_df_plot <- pred_df[pred_df$confidence_score >= arg_list$score_threshold, ]
+              pred_df_plot <- pred_df[pred_df$confidence_score >= args$score_threshold, ]
               
               # plot predictions
               # NOTE: turn this into reactive output for visualization tab
-              plot_img_bbox(filename, pred_df_plot, arg_list$output_dir, arg_list$data_dir, 
-                            arg_list$col, arg_list$lty, arg_list$lwd, arg_list$w, arg_list$h)
+              plot_img_bbox(filename, pred_df_plot, args$output_dir, args$data_dir, 
+                            args$col, args$lty, args$lwd, args$w, args$h)
             }
             
             # write metadata tags
-            if(arg_list$write_metadata){
-              write_metadata_tags(pred_df = pred_df, model_version = arg_list$model_version, 
-                                  review_threshold = arg_list$review_threshold)
+            if(args$write_metadata){
+              write_metadata_tags(pred_df = pred_df, model_version = args$model_version, 
+                                  review_threshold = args$review_threshold)
             }
           }
           
           # save checkpoint
-          if (i %% arg_list$checkpoint_frequency == 0) {
+          if (i %% args$checkpoint_frequency == 0) {
             
-            df_out <- save_checkpoint(predictions_list, arg_list$score_threshold,
+            df_out <- save_checkpoint(predictions_list, args$score_threshold,
                                       bboxes, output_dir, model_version,
                                       get_metadata, write_bbox_csv, results, final=F)
              
