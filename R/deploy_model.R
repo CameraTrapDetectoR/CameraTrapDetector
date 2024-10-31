@@ -35,7 +35,7 @@
 #'  and creates a folder within your data_dir. If you are resuming evaluation from a checkpoint,
 #'  put the  full path to the desired prediction directory here. 
 #'  All previous model arguments will also be loaded and do not need to be specified again.
-#' @param recursive boolean. Do you have images in subfolders within your
+#' @param recurse boolean. Do you have images in subfolders within your
 #'  data_dir that you want to analyze, if so, set to TRUE. If you only want to 
 #'  analyze images within your data_dir and not within sub-folders, set to FALSE.
 #' @param model_type Options are 'general', 'species', 'family', or 'pig_only' 
@@ -107,7 +107,7 @@ deploy_model <- function(
     data_dir = NULL,
     output_dir = NULL,
     model_type = 'species',
-    recursive = TRUE,
+    recurse = TRUE,
     file_extensions = c(".jpg"),
     make_plots = TRUE,
     sample50 = FALSE, 
@@ -135,7 +135,7 @@ deploy_model <- function(
     data_dir = fs::path_norm(data_dir),
     output_dir = output_dir,
     model_type = model_type,
-    recursive = recursive,
+    recurse = recurse,
     file_extensions = file_extensions,
     make_plots = make_plots,
     sample50 = sample50, 
@@ -170,7 +170,7 @@ deploy_model <- function(
   #-- Prep data
   
   # load inputs
-  file_list <- define_dataset(arg_list$data_dir, arg_list$recursive, arg_list$file_extensions)
+  file_list <- define_dataset(arg_list$data_dir, arg_list$recurse, arg_list$file_extensions)
   
   # take random sample if sample50=TRUE  
   if(arg_list$sample50==TRUE && length(file_list) > 50){
@@ -207,7 +207,8 @@ deploy_model <- function(
   
   # set output directory
   if(is.null(output_dir)){
-    output_dir <- set_output_dir(data_dir, arg_list$model_version, arg_list$recursive, arg_list$make_plots)
+    output_dir <- set_output_dir(data_dir, arg_list$model_version, arg_list$recurse, arg_list$make_plots)
+    arg_list$output_dir <- output_dir
   }
   
   #############
@@ -291,8 +292,7 @@ deploy_model <- function(
           pred_df_plot <- pred_df[pred_df$confidence_score >= arg_list$score_threshold, ]
           
           # plot predictions
-          plot_img_bbox(filename, pred_df_plot, arg_list$output_dir, arg_list$data_dir, 
-                        arg_list$col, arg_list$lty, arg_list$lwd, arg_list$w, arg_list$h)
+          plot_img_bbox(filename=filename, plot_df=pred_df_plot, arg_list=arg_list)
         }
         
         # write metadata tags

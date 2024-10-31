@@ -97,7 +97,7 @@ write_args <- function(arg_list, output_dir) {
   arg_list$output_dir <- fs::path_norm(output_dir)
   
   # convert multiple file extensions to single string
-  arg_list$file_extensions <- paste(file_extensions, collapse = ", ")
+  arg_list$file_extensions <- paste(arg_list$file_extensions, collapse = ", ")
   
   # convert to data frame
   arg_df <- arg_df <- t(as.data.frame(arg_list))
@@ -125,7 +125,7 @@ load_args <- function(output_dir){
   arg_df <- dplyr::mutate(arg_df, dplyr::across(everything(), ~stringr::str_trim(.)))
   
   # convert col types
-  arg_df <- dplyr::mutate(arg_df, dplyr::across(c(recursive, make_plots, sample50,
+  arg_df <- dplyr::mutate(arg_df, dplyr::across(c(recurse, make_plots, sample50,
                                                     write_bbox_csv, overlap_correction, get_metadata,
                                                     write_metadata), ~as.logical(.)))
   arg_df <- suppressWarnings(dplyr::mutate(arg_df, dplyr::across(c(score_threshold, overlap_threshold,
@@ -236,7 +236,7 @@ save_checkpoint <- function(predictions_list, score_threshold,
 
 # Set output directory ------------------------------
 #' @export
-set_output_dir <- function(data_dir, model_version, recursive, make_plots){
+set_output_dir <- function(data_dir, model_version, recurse, make_plots){
   
   # make new output dir
   datenow <- format(Sys.Date(), "%Y%m%d")
@@ -248,7 +248,7 @@ set_output_dir <- function(data_dir, model_version, recursive, make_plots){
   fs::dir_create(output_dir)
   
   # make recursive directories if needed
-  if(recursive && make_plots) {
+  if(recurse && make_plots) {
     rec_dirs <- fs::dir_ls(data_dir, type = "directory")
     rec_dirs <- rec_dirs[stringr::str_detect(rec_dirs, "prediction", negate = T)]
     fs::dir_create(stringr::str_replace_all(rec_dirs, data_dir, output_dir))
