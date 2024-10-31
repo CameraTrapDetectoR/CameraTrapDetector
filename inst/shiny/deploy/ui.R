@@ -12,7 +12,7 @@ shinyUI(fluidPage(
                         ## data_dir
                         shinyFiles::shinyDirButton("data_dir", "data_dir", 
                                                    title="Select the location of photos to be analyzed. Just select the folder where it resides in the top half of the menu and press `Select`"),
-                        shinyBS::bsTooltip("data_dir", "Location of image files on your computer. If they are in sub-directories within your data_dir, select `recursive=TRUE`", 
+                        shinyBS::bsTooltip("data_dir", "Location of image files on your computer. If they are in sub-directories within your data_dir, select `recurse=TRUE`", 
                                            placement = "top"),
                         shiny::verbatimTextOutput("data_dir_Display", placeholder = TRUE),
                         
@@ -23,10 +23,10 @@ shinyUI(fluidPage(
                         shinyBS::bsTooltip("model_type", "This defines your model type (taxonomic level) and version.",
                                            placement = "top"),
                         
-                        ## recursive
-                        shiny::selectInput("recursive", "recursive", 
+                        ## recurse
+                        shiny::selectInput("recurse", "recurse", 
                                            choices = c(TRUE, FALSE)),
-                        shinyBS::bsTooltip("recursive", "Do you have images in subfolders within data_dir?", 
+                        shinyBS::bsTooltip("recurse", "Do you have images in subfolders within data_dir?", 
                                            placement = "top"),
                         
                         ## file_extensions
@@ -136,7 +136,7 @@ shinyUI(fluidPage(
                The `species` model recognizes 75 species; latest version is V2. 
                The `family` model recognizes 31 families; latest version is V2. 
                The `pig_only` model recognizes only pigs; latest version is V1."),
-                        shiny::p(strong("recursive : "),"	 TRUE/FALSE. Do you have images in subfolders within your data_dir that you want to analyze?"),
+                        shiny::p(strong("recurse : "),"	 TRUE/FALSE. Do you have images in subfolders within your data_dir that you want to analyze?"),
                         shiny::p(strong("file_extensions : " ),"	Types of images accepted by the model. Select all options represented in your data_dir."),
                         shiny::p(strong("make_plots : "),"	TRUE/FALSE. Do you want to make copies of your images with bounding boxes plotted on them?"),
                         shiny::p(strong("output_dir : "),"  Absolute path to output. Default is NULL; this creates a folder within your data_dir named after model type,
