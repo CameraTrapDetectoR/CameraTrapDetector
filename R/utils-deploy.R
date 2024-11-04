@@ -6,7 +6,7 @@ verify_args <- function(arg_list) {
   
   # check model_type
   models_available <- c('general', 'general_v1', 'general_v2',
-                        'species', 'species_v1', 'species_v2',
+                        'species', 'species_v1', 'species_v2', 'species_v3a',
                         'family', 'family_v1', 'family_v2',
                         'pig_only', 'pig_only_v1')
   if(!arg_list$model_type %in% models_available) {
@@ -16,9 +16,11 @@ verify_args <- function(arg_list) {
   
   # define model version
   arg_list$model_version <- arg_list$model_type
-  latest <- "v2"   # latest model generation
-  if(arg_list$model_version %in% c('general', 'family', 'species', 'pig_only')){
-    arg_list$model_version <- paste(arg_list$model_version, latest, sep="_")
+  if(arg_list$model_version %in% c('general', 'family')){
+    arg_list$model_version <- paste(arg_list$model_version, "v2", sep="_")
+  }
+  if(arg_list$model_version %in% c('species')){
+    arg_list$model_version <- paste(arg_list$model_version, "v3a", sep="_")
   }
   
   # check ext types
