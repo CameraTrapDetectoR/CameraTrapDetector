@@ -120,14 +120,14 @@ shinyServer(function(input, output) {
       
       # set output_dir to data_dir if none has been selected
       if(identical(dirname_output_dir(), character(0)) == TRUE){
-        # output_dir <- NULL
+        output_dir <- NULL
         output_dirText <- paste0("the most recent model_predictions folder in: ", 
                                  dirname_data_dir(), ". When this window closes model deployment is done and you can close the Shiny App window.
                                          
                                          Also, if you want to work with model predictions directly in R. You can find them as the object `predictions`.
                                          Try typing `head(predictions)` in the R console to see this object.")
       } else {
-        # output_dir <- dirname_output_dir()
+        output_dir <- dirname_output_dir()
         output_dirText <- paste0(": ", dirname_output_dir())
       }
       
@@ -157,8 +157,9 @@ shinyServer(function(input, output) {
       )
       
       # show cats / warnings normally shown in console in app
-      predictions <<- deploy_model(data_dir = dirname_data_dir(), 
-                                  output_dir = dirname_output_dir(), 
+      withConsoleRedirect("console", {
+        predictions <<- deploy_model(data_dir = dirname_data_dir(), 
+                                  output_dir = output_dir, 
                                   model_type = input$model_type, 
                                   recurse = as.logical(input$recurse), 
                                   file_extensions = input$file_extensions, 
@@ -177,7 +178,7 @@ shinyServer(function(input, output) {
                                   longitude = ifelse(input$longitude == "None", 
                                                     switch(input$longitude, "None" = NULL, input$longitude),
                                                     input$longitude))
-      
+      })
       # close the loading modal after model has finished running
       shiny::removeModal()
     }  
