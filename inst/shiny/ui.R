@@ -1,6 +1,8 @@
 shinyUI(fluidPage(
   
   shiny::tabsetPanel(
+    
+    #### DEPLOY MODEL ####
     shiny::tabPanel("Deploy Model", 
                     
                     shinyjs::useShinyjs(),
@@ -16,10 +18,18 @@ shinyUI(fluidPage(
                                            placement = "top"),
                         shiny::verbatimTextOutput("data_dir_Display", placeholder = TRUE),
                         
+                        ## output_dir
+                        shinyFiles::shinyDirButton("output_dir", "output_dir", 
+                                                   title="Select the location to output. Just select the folder where it resides in the top half of the menu and press `Select`"),
+                        shinyBS::bsTooltip("output_dir", "Location for output to be written on your computer. If folder is not selected, then a folder will be created within your data_dir. To resume from a previously-saved checkpoint, this field must be populated with the folder where the checkpoint file is stored.", 
+                                           placement = "top"),
+                        shiny::verbatimTextOutput("output_dir_Display", placeholder = TRUE),
+                        
                         ## model_type
                         shiny::selectInput("model_type", "model_type", 
                                            choices = c("general_v1", "general_v2", "family_v1", "family_v2", 
-                                                       "species_v1", "species_v2", "pig_only_v1", "pig_only_v2")),
+                                                       "species_v1", "species_v2", "pig_only_v1", "pig_only_v2"),
+                                           selected = "species_v2"),
                         shinyBS::bsTooltip("model_type", "This defines your model type (taxonomic level) and version.",
                                            placement = "top"),
                         
@@ -42,12 +52,6 @@ shinyUI(fluidPage(
                         shinyBS::bsTooltip("make_plots", "Do you want to make plots of the images with their predicted bounding boxes?", 
                                            placement = "top"),
 
-                        ## output_dir
-                        shinyFiles::shinyDirButton("output_dir", "output_dir", 
-                                                   title="Select the location to output. Just select the folder where it resides in the top half of the menu and press `Select`"),
-                        shinyBS::bsTooltip("output_dir", "Location for output to be written on your computer. If folder is not selected, then a folder will be created within your data_dir. To resume from a previously-saved checkpoint, this field must be populated with the folder where the checkpoint file is stored.", 
-                                           placement = "top"),
-                        shiny::verbatimTextOutput("output_dir_Display", placeholder = TRUE),
                         
                         ## sample50
                         shiny::selectInput("sample50", "sample50", choices = c(FALSE, TRUE)),
@@ -72,7 +76,7 @@ shinyUI(fluidPage(
                                            placement = "top"),
                         
                         ## overlap_threshold
-                        shiny::numericInput("overlap_threshold", "overlap_threshold", value = 0.9, 
+                        shiny::numericInput("overlap_threshold", "overlap_threshold", value = 0.7, 
                                             min = 0, max = 0.99, step = 0.01),
                         shinyBS::bsTooltip("overlap_threshold", 
                                            "Proportion of bounding box overlap to determine if detections are to be considered a single detection.",
@@ -82,7 +86,7 @@ shinyUI(fluidPage(
                         shinyBS::bsTooltip("get_metadata", "Do you want to include select image metadata fields in your output?",
                                            placement = "top"),
                         ## write metadata
-                        shiny::selectInput("write_metadata", "write_metadata", choices = c(TRUE, FALSE)),
+                        shiny::selectInput("write_metadata", "write_metadata", choices = c(TRUE, FALSE), selected = FALSE),
                         shinyBS::bsTooltip("write_metadata", "Do you want to write model predictions to your image metadata?",
                                            placement = "top"),
                         
@@ -94,9 +98,9 @@ shinyUI(fluidPage(
                                            placement = "top"),
                         
                         ## location
-                        shiny::numericInput("latitude", "latitude", value = NULL),
+                        shiny::numericInput("latitude", "latitude", value = "None"),
                         shinyBS::bsTooltip("latitude", "The image location latitude"),
-                        shiny::numericInput("longitude", "longitude", value = NULL),
+                        shiny::numericInput("longitude", "longitude", value = "None"),
                         shinyBS::bsTooltip("longitude", "The image location longitude"),
                         
                       ),
@@ -161,9 +165,13 @@ shinyUI(fluidPage(
                     )
     ),
     
+    
+    #### VISUALISE RESULTS ####
     shiny::tabPanel("Visualize Results",
                     
                     ),
+    
+    #### VERIFY RESULTS ####
     shiny::tabPanel("Verify Results"))
   )
 )

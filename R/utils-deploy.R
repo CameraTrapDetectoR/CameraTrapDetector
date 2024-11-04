@@ -225,7 +225,10 @@ save_checkpoint <- function(predictions_list, score_threshold,
   # save predictions to csv
   if(final){
     utils::write.csv(df_out, fs::path(output_dir, paste(model_version, 'model_predictions', sep="_"), ext="csv"), row.names=FALSE)
-    file.remove(fs::path(output_dir, paste(model_version, "model_predictions_checkpoint", sep="_")))
+    # remove checkpoint file
+    if(file.exists(fs::path(output_dir, paste(model_version, "model_predictions_checkpoint.csv", sep="_")))){
+      file.remove(fs::path(output_dir, paste(model_version, "model_predictions_checkpoint.csv", sep="_")))
+    }
   } else{
     utils::write.csv(df_out, fs::path(output_dir, paste(model_version, 'model_predictions_checkpoint', sep="_"), ext="csv"), row.names=FALSE)
   }
