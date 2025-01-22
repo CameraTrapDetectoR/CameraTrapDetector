@@ -35,15 +35,18 @@ aggregate_counts <- function(predictions_list){
   class_counts <- dplyr::rename(class_counts,
                                 prediction_count = n)
   
-  # join class counts
-  multiple_preds <- dplyr::left_join(multiple_preds, class_counts,
-                                     by = c("filename", "prediction"))
-  multiple_preds <- dplyr::select(multiple_preds, !n)
+  # format images with multiple detections
+  if(nrow(multiple_preds) > 0) {
+    # join class counts
+    multiple_preds <- dplyr::left_join(multiple_preds, class_counts,
+                                       by = c("filename", "prediction"))
+    multiple_preds <- dplyr::select(multiple_preds, !n)
+    
+    # aggregate class counts
+    multiple_preds <- dplyr::group_by(multiple_preds, filename, prediction)
+    multiple_preds <- dplyr::filter(multiple_preds, confidence_score == min(confidence_score))
+  }
   
-  # aggregate class counts
-  multiple_preds <- dplyr::group_by(multiple_preds, filename, prediction)
-  multiple_preds <- dplyr::filter(multiple_preds, confidence_score == min(confidence_score))
-
   # combine formatted dfs
   df_out <- dplyr::bind_rows(single_preds, multiple_preds)
   
