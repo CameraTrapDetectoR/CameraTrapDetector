@@ -8,7 +8,7 @@
 #' @import dplyr
 #'
 #' @export
-write_bbox_df <- function(full_df, bboxes) {
+write_bbox_df <- function(predictions_list, bboxes) {
   
   # convert list into dataframe
   bbox_df <- do.call(dplyr::bind_rows, predictions_list)
