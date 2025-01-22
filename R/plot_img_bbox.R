@@ -16,36 +16,28 @@
 #' 
 plot_img_bbox<- function(filename, plot_df, arg_list){
   
-  # prop_bbox means that data are from megadetector, not from here, so 
-  # things are a little different in the file_list. 
+  # read in image and resize to user specs
   filename_full <- dplyr::if_else(fs::file_exists(filename), filename, 
                                   fs::path(arg_list$data_dir, filename))
   img <- magick::image_read(filename_full)
   img <- magick::image_scale(img, paste0(arg_list$w, 'x', arg_list$h, '!'))
   
-  
-  # save file information
-  # if(!endsWith(output_dir, "/")){
-  #   # add a slash to the end of data dir, for when I pull it from file name
-  #   output_dir <- paste0(output_dir, "/")
-  # }
+  # strip filename and replace recursive dir structure with underscores
+  file_strip <- stringr::str_remove(filename_full, arg_list$data_dir)
+  file_strip <- sub("^[^[:alnum:]]+",'', stringr::str_replace(file_strip, "/", "_"))
   
   # substitue output dir for data dir in new filename
-  output_nm <- fs::path(stringr::str_replace(filename_full, arg_list$data_dir, arg_list$output_dir))
+  output_nm <- fs::path(paste(arg_list$output_dir, file_strip, sep = "/"))
   
   # replace file extension with png 
   output_nm <- stringr::str_replace(output_nm, stringr::str_split_i(output_nm, "\\.", -1), "png")
   
-  # 
-  # # I want to replace slashes with _ for those recursive files. This will 
-  # # keep them all in the same place
-  # stripped_filename <- tools::file_path_sans_ext(gsub("/", "_", gsub(data_dir, "", filename)))
-  # output_nm <- file.path(output_dir, paste0(stripped_filename, ".png"))
+  # inverse y-values of bboxes for R plotting
+  plot_df <- dplyr::mutate(plot_df, dplyr::across(c(YMin, YMax), ~ 1 - .))
 
   # rescale bounding box
   plot_df <- dplyr::mutate(plot_df, dplyr::across(c(XMin, XMax), ~.*arg_list$w))
   plot_df <- dplyr::mutate(plot_df, dplyr::across(c(YMin, YMax), ~.*arg_list$h))
-  
   
   # make plot
   grDevices::png(output_nm, width=arg_list$w, height=arg_list$h)
