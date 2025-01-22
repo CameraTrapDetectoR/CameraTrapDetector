@@ -31,7 +31,7 @@ download_models <- function(models)
     model_i <- models[i]
     
     # define latest model generation - manually update with each deployment
-    if(model_type == "species") {
+    if(model_i == "species") {
       latest <- "v3"
     } else{
       latest <- "v2"
@@ -89,7 +89,7 @@ download_models <- function(models)
       } else {
         path <- fs::path(cache_path, "species_v3", ext="zip")
         folder <- fs::path(cache_path, "species_v3")
-        # agdata <- 'link to download V3 model'
+        agdata <- 'https://bit.ly/ctdv3sp'
       }
       
     }
