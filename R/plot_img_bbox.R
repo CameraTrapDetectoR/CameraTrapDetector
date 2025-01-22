@@ -41,7 +41,7 @@ plot_img_bbox<- function(filename, plot_df, arg_list){
   # # keep them all in the same place
   # stripped_filename <- tools::file_path_sans_ext(gsub("/", "_", gsub(data_dir, "", filename)))
   # output_nm <- file.path(output_dir, paste0(stripped_filename, ".png"))
-  
+
   # rescale bounding box
   plot_df <- dplyr::mutate(plot_df, dplyr::across(c(XMin, XMax), ~.*arg_list$w))
   plot_df <- dplyr::mutate(plot_df, dplyr::across(c(YMin, YMax), ~.*arg_list$h))
@@ -64,8 +64,9 @@ plot_img_bbox<- function(filename, plot_df, arg_list){
       graphics::segments(x0=plot_df$XMax[i], y0=plot_df$YMax[i],
                          x1=plot_df$XMax[i], y1=plot_df$YMin[i], 
                          col=arg_list$col, lty=arg_list$lty, lwd=arg_list$lwd)
-      graphics::text(x= plot_df$XMin[i]+6, y=plot_df$YMin[i]+10, plot_df$prediction[i],
-                     col=arg_list$col, adj=0)
+      graphics::text(x= plot_df$XMin[i]+6, y=plot_df$YMax[i]-10, 
+                     paste0(plot_df$prediction[i], " = ", round(plot_df$confidence_score[i], 2)),
+                     col=arg_list$col, adj=0, cex = 1.6)
     }
   }
   
