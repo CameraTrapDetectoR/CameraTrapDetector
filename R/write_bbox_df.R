@@ -14,7 +14,7 @@ write_bbox_df <- function(full_df, bboxes) {
   bbox_df <- do.call(dplyr::bind_rows, predictions_list)
   
   # round bbox coordinates to the third decimal place
-  bbox_df <- dplyr::mutate(bbox_df, dplyr::across(x_center:YMax), ~round(., 3))
+  bbox_df <- dplyr::mutate(bbox_df, dplyr::across(x_center:YMax, ~round(., 3)))
   
   # combine new bboxes with any existing results
   bbox_df <- unique(rbind(bbox_df, bboxes))
