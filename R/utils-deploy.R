@@ -4,9 +4,15 @@ verify_args <- function(arg_list) {
   
   #-- Check arguments provided 
   
+  # check data_dir is a real directory
+  if(!fs::is_dir(data_dir)) {
+    stop(paste0("data_dir is not a true directory. 
+                Please re-enter the full path to your image directory."))
+  }
+  
   # check model_type
   models_available <- c('general', 'general_v1', 'general_v2',
-                        'species', 'species_v1', 'species_v2', 'species_v3a',
+                        'species', 'species_v1', 'species_v2', 'species_v3',
                         'family', 'family_v1', 'family_v2',
                         'pig_only', 'pig_only_v1')
   if(!arg_list$model_type %in% models_available) {
@@ -20,7 +26,7 @@ verify_args <- function(arg_list) {
     arg_list$model_version <- paste(arg_list$model_version, "v2", sep="_")
   }
   if(arg_list$model_version %in% c('species')){
-    arg_list$model_version <- paste(arg_list$model_version, "v3a", sep="_")
+    arg_list$model_version <- paste(arg_list$model_version, "v3", sep="_")
   }
   
   # check ext types
