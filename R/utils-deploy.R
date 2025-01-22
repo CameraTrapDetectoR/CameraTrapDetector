@@ -5,7 +5,7 @@ verify_args <- function(arg_list) {
   #-- Check arguments provided 
   
   # check data_dir is a real directory
-  if(!fs::is_dir(data_dir)) {
+  if(!fs::is_dir(arg_list$data_dir)) {
     stop(paste0("data_dir is not a true directory. 
                 Please re-enter the full path to your image directory."))
   }
