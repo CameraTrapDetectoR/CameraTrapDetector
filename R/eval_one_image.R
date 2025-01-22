@@ -17,7 +17,7 @@
 #' @examples
 eval_one_image <- function(input, filename, label_encoder, score_threshold,
                            overlap_correction, overlap_threshold,
-                           location, possible_labels, model) {
+                           location, possible_labels, model, model_version) {
   
   # deploy the model. suppressing warnings here, because it is not important
   defaultW <- getOption("warn")

@@ -280,7 +280,7 @@ deploy_model <- function(
         # deploy the model on the image
         pred_df <- eval_one_image(input, filename, label_encoder, arg_list$score_threshold,
                                   arg_list$overlap_correction, arg_list$overlap_threshold,
-                                  location, possible_labels, model)
+                                  location, possible_labels, model, arg_list$model_version)
         
         # add prediction df to list
         predictions_list[[i]] <- pred_df
