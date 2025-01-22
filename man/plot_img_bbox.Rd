@@ -4,40 +4,14 @@
 \alias{plot_img_bbox}
 \title{Plot image with bounding box predictions}
 \usage{
-plot_img_bbox(
-  filename,
-  plot_df,
-  output_dir,
-  data_dir,
-  plot_label = TRUE,
-  col = "red",
-  lty = 1,
-  lwd = 2,
-  w = w,
-  h = h
-)
+plot_img_bbox(filename, plot_df, arg_list)
 }
 \arguments{
 \item{filename}{The file containing the image}
 
 \item{plot_df}{Prediction dataframe that is output from deployment}
 
-\item{output_dir}{Desired directory to make plots}
-
-\item{data_dir}{absolute path to images}
-
-\item{plot_label}{boolean. Do you want the predicted category on the plot?}
-
-\item{col}{color of the bbox (and label if `plot_label=TRUE`). See `?plot` 
-for an explanation of `col`, `lwd`, and `lty`}
-
-\item{lty}{line type of bbox}
-
-\item{lwd}{line width of bbox}
-
-\item{w}{The image width (in pixels) for the annotated plot.}
-
-\item{h}{The image height (in pixels) for the annotated plot}
+\item{arg_list}{argument list to pull all the other arguments}
 }
 \value{
 png image file in output_dir with bboxes and labels plotted

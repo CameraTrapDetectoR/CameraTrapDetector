@@ -7,7 +7,7 @@ Description: CameraTrapDetectoR runs object detection models on camera trap imag
 License: GPL (>= 3)
 URL: https://github.com/CameraTrapDetectoR/CameraTrapDetectoR
 Encoding: UTF-8
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 Imports: 
     dplyr,
     exiftoolr,

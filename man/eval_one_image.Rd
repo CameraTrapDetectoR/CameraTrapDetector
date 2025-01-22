@@ -8,6 +8,7 @@ eval_one_image(
   input,
   filename,
   label_encoder,
+  score_threshold,
   overlap_correction,
   overlap_threshold,
   location,
@@ -16,7 +17,17 @@ eval_one_image(
 )
 }
 \arguments{
-\item{label_encoder}{}
+\item{input}{torch tensor. formatted image to pass to the model}
+
+\item{filename}{string. full path to image file}
+
+\item{label_encoder}{dict. class label dictionary}
+
+\item{score_threshold}{numeric. arg passed from `deploy_model` to filter low confidence predictions}
+
+\item{overlap_correction}{boolean. arg passed from `deploy_model` to apply non-maximum suppression}
+
+\item{overlap_threshold}{numeric. arg passed from `deploy_model`, IoU threshold for NMS}
 
 \item{possible_labels}{}
 }

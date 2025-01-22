@@ -4,14 +4,12 @@
 \alias{get_model_input}
 \title{get_model_input}
 \usage{
-get_model_input(filename, w = 408, h = 307)
+get_model_input(filename, model_version)
 }
 \arguments{
 \item{filename}{full path to image filename}
 
-\item{w}{image width - must correspond to model training, DO NOT CHANGE}
-
-\item{h}{image height - must correspond to model training, DO NOT CHANGE}
+\item{model_version}{model version; input differs for V3}
 }
 \value{
 list of two tensors image and target

@@ -4,12 +4,14 @@
 \alias{decode_output}
 \title{Extract relevant model output}
 \usage{
-decode_output(output, label_encoder)
+decode_output(output, label_encoder, model_version)
 }
 \arguments{
 \item{output}{this is a subset of the list output from the neural net}
 
 \item{label_encoder}{passed from deploy model function}
+
+\item{model_version}{since output >= V3 is different}
 }
 \value{
 a dataframe of model output for an image that can be interpreted in R
