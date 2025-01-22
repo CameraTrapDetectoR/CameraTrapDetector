@@ -31,7 +31,11 @@ download_models <- function(models)
     model_i <- models[i]
     
     # define latest model generation - manually update with each deployment
-    latest <- "v2"
+    if(model_type == "species") {
+      latest <- "v3"
+    } else{
+      latest <- "v2"
+    }
     if(model_i %in% c('general', 'family', 'species', 'pig_only')){
       model_i <- paste(model_i, latest, sep="_")}
     
@@ -77,11 +81,15 @@ download_models <- function(models)
         #agdata <- "https://agdatacommons.nal.usda.gov/ndownloader/files/44576215"
         agdata <- "https://bit.ly/3T4srgM"
       }
-      else {
+      if(grepl("species_v2", model_i, ignore.case = TRUE)) {
         path <- fs::path(cache_path, "species_v2_3", ext="zip")
         folder <- fs::path(cache_path, "species_v2")
         #agdata <- "https://agdatacommons.nal.usda.gov/ndownloader/files/44576230"
         agdata <- "https://bit.ly/ctdv2sp"
+      } else {
+        path <- fs::path(cache_path, "species_v3", ext="zip")
+        folder <- fs::path(cache_path, "species_v3")
+        # agdata <- 'link to download V3 model'
       }
       
     }
