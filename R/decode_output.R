@@ -24,14 +24,15 @@ decode_output <- function(
     
     # filter down to boxes with predictions
     output_df <- dplyr::filter(output_df, !(dplyr::if_all(c(V5:V68), ~ . == 0)))
-    
+
     # rename columns
     output_colnames <- c("x_center", "y_center", "box_w", "box_h",
                          label_encoder$label)
     colnames(output_df) <- output_colnames
     
     # remove classes with no predictions
-    output_df <- dplyr::select(output_df, where(~ any(. != 0)))
+    output_df <- dplyr::select(output_df, c(x_center, y_center, box_w, box_h,
+                                            where(~ any(. != 0))))
     
     # normalize bbox coordinates
     output_df <- dplyr::mutate(output_df, dplyr::across(x_center:box_h, ~ ./640))
@@ -39,14 +40,19 @@ decode_output <- function(
     # INTERNAL NOTE: review boxes with multiple classifications for out-sample misclassifications
     
     # pivot df to have a column label, confidence score
-    output_df <- tidyr::pivot_longer(output_df, !(x_center:box_h), 
+    output_df <- tryCatch(output_df <- tidyr::pivot_longer(output_df, !(x_center:box_h), 
                                      names_to = "prediction", 
-                                     values_to = "confidence_score")
+                                     values_to = "confidence_score"),
+                          error = function(e) output_df <- data.frame(x_center = 0, y_center = 0,
+                                                                      box_w = 0, box_h = 0, 
+                                                                      prediction = "Empty",
+                                                                      confidence_score = 1))
     pred_df <- dplyr::filter(output_df, confidence_score > 0)
     
     # select classification with highest confidence for each box
     pred_df <- dplyr::group_by(pred_df, x_center, y_center, box_w, box_h)
     pred_df <- dplyr::filter(pred_df, confidence_score == max(confidence_score))
+    pred_df <- dplyr::ungroup(pred_df)
     
     # add normalized (xmin,ymin,xmax,ymax) format coordinates
     pred_df <- dplyr::mutate(pred_df, XMin = x_center - (box_w / 2),
@@ -62,13 +68,15 @@ decode_output <- function(
     pred_df <- dplyr::relocate(pred_df, confidence_score, prediction, .after = last_col())
     
     # apply classwise non-maximum suppression at high threshold
-    pred_df <- nms(pred_df, threshold = 0.95, classwise = F)
+    if(nrow(pred_df) > 1){
+      pred_df <- nms(pred_df, threshold = 0.95, classwise = F)
+    }
     
     # account for no predictions
     if(nrow(pred_df)==0){
       pred_df <- dplyr::add_row(pred_df, x_center = 0, y_center = 0, box_w = 0, 
-                                box_h = 0, XMin = 0, YMin = 0, XMax = 1,
-                                YMax = 1, confidence_score = 1,
+                                box_h = 0, XMin = 0, YMin = 0, XMax = 0,
+                                YMax = 0, confidence_score = 1,
                                 prediction = "Empty")
     }
   }
@@ -125,7 +133,7 @@ decode_output <- function(
     if(nrow(pred_df)==0){
       pred_df <- dplyr::add_row(pred_df, x_center = 0, y_center = 0,
                                 box_w = 0, box_h = 0, XMin = 0, YMin = 0, 
-                                XMax = 1, YMax = 1, confidence_score = 1,
+                                XMax = 0, YMax = 0, confidence_score = 1,
                                 prediction = "Empty")
     }
     
