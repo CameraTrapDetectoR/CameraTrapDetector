@@ -7,11 +7,11 @@
 #' @param threshold IoU threshold for suppressing overlapping boxes
 #' @param classwise boolean. Apply nms across classes (FALSE) or just within class (TRUE)
 #' 
-#' @return 
+#' @return nms_df filtered df using non-maximum suppression
 #' @export
 #'
 #' @examples
-nms <- function(df, threshold, classwise) {
+nms <- function(df, threshold, classwise=F) {
   
   # perform agnostic NMS
   if(!classwise){
@@ -39,6 +39,7 @@ nms <- function(df, threshold, classwise) {
   }
   
   # perform NMS within class
+  # IN DEV
   if(classwise){
     df <- dplyr::arrange(df, prediction, dplyr::desc(confidence_score))
   }
