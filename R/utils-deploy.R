@@ -258,12 +258,12 @@ set_output_dir <- function(data_dir, model_version, recurse, make_plots){
   output_dir <- fs::path(data_dir, paste0("predictions_", model_version, current_time))
   fs::dir_create(output_dir)
   
-  # make recursive directories if needed
-  if(recurse && make_plots) {
-    rec_dirs <- fs::dir_ls(data_dir, type = "directory")
-    rec_dirs <- rec_dirs[stringr::str_detect(rec_dirs, "prediction", negate = T)]
-    fs::dir_create(stringr::str_replace_all(rec_dirs, data_dir, output_dir))
-    }
+  # # make recursive directories if needed
+  # if(recurse && make_plots) {
+  #   rec_dirs <- fs::dir_ls(data_dir, type = "directory")
+  #   rec_dirs <- rec_dirs[stringr::str_detect(rec_dirs, "prediction", negate = T)]
+  #   fs::dir_create(stringr::str_replace_all(rec_dirs, data_dir, output_dir))
+  #   }
   
   return(output_dir)
 }
