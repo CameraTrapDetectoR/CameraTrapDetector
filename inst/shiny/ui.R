@@ -28,8 +28,8 @@ shinyUI(fluidPage(
                         ## model_type
                         shiny::selectInput("model_type", "model_type", 
                                            choices = c("general_v1", "general_v2", "family_v1", "family_v2", 
-                                                       "species_v1", "species_v2", "pig_only_v1", "pig_only_v2"),
-                                           selected = "species_v2"),
+                                                       "species_v1", "species_v2", "species_v3", "pig_only_v1"),
+                                           selected = "species_v3"),
                         shinyBS::bsTooltip("model_type", "This defines your model type (taxonomic level) and version.",
                                            placement = "top"),
                         
@@ -64,7 +64,7 @@ shinyUI(fluidPage(
                                            placement = "top"),
                         
                         ## score_threshold
-                        shiny::numericInput("score_threshold", "score_threshold", value = 0.6, 
+                        shiny::numericInput("score_threshold", "score_threshold", value = 0.2, 
                                             min = 0, max = 0.99, step = 0.01),
                         shinyBS::bsTooltip("score_threshold", 
                                            "Confidence threshold for using a bounding box. A lower number will produce more bboxes (it will be less stringent in deciding to make a bbox). A higher number will produce fewer bboxes (it will be more stringent).", 
@@ -111,7 +111,7 @@ shinyUI(fluidPage(
                         # shiny::h4("Current deploy_model code: (You can copy this and paste it to the console if you prefer)"),
                         # shiny::fluidRow(column(12, textOutput("deploy_modelCode"))),
                         
-                        shiny::h2("Deploy CameraTrapDetectoR Models"),
+                        shiny::h2("Deploy CameraTrapDetector Models"),
                         shiny::h3("Select your model arguments from the panel on the left."),
                         shiny::h4("See below for detailed descriptions of each argument."),
                         shiny::h4("When you're ready, hit the ", strong("Run model"), " button below:"),
@@ -137,7 +137,7 @@ shinyUI(fluidPage(
                         shiny::p(strong("data_dir : "),"	Absolute path to the folder containing your images"),
                         shiny::p(strong("model_type : "),"	Model types 'general', 'species', 'family', 'pig_only'.  
                The `general` model predicts mammals, birds, humans, and vehicles; latest version is V2.  
-               The `species` model recognizes 75 species; latest version is V2. 
+               The `species` model recognizes 64 species and subspecies groups; latest version is V3. 
                The `family` model recognizes 31 families; latest version is V2. 
                The `pig_only` model recognizes only pigs; latest version is V1."),
                         shiny::p(strong("recurse : "),"	 TRUE/FALSE. Do you have images in subfolders within your data_dir that you want to analyze?"),
