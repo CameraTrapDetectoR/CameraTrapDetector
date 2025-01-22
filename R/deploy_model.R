@@ -224,7 +224,6 @@ deploy_model <- function(
   model <- weight_loader(folder)
   model$eval()
 
-  
   # Write Arguments to File
   write_args(arg_list, output_dir)
   
@@ -255,11 +254,11 @@ deploy_model <- function(
                              style=3, char="*")  
   
   # explicitly load torch packages into environment
-  suppressWarnings(suppressPackageStartupMessages({
-    library(torch)
-    library(torchvision)
-    library(torchvisionlib)
-  }))
+  # suppressWarnings(suppressPackageStartupMessages({
+  #   library(torch)
+  #   library(torchvision)
+  #   library(torchvisionlib)
+  # }))
 
   # loop over each image
   toc <- Sys.time()
@@ -271,7 +270,7 @@ deploy_model <- function(
       filename <- fs::path_norm(file_list[i])
       
       # load image and convert to model input
-      input <- get_model_input(filename)
+      input <- get_model_input(filename, arg_list$model_version)
       
       # handle any errors, else run the model
       if(is.data.frame(input)) {
@@ -279,7 +278,7 @@ deploy_model <- function(
       } else {
         
         # deploy the model on the image
-        pred_df <- eval_one_image(input, filename, label_encoder, 
+        pred_df <- eval_one_image(input, filename, label_encoder, arg_list$score_threshold,
                                   arg_list$overlap_correction, arg_list$overlap_threshold,
                                   location, possible_labels, model)
         
@@ -288,11 +287,7 @@ deploy_model <- function(
         
         # make plots
         if(arg_list$make_plots==TRUE){
-          # subset by score threshold for plotting
-          pred_df_plot <- pred_df[pred_df$confidence_score >= arg_list$score_threshold, ]
-          
-          # plot predictions
-          plot_img_bbox(filename=filename, plot_df=pred_df_plot, arg_list=arg_list)
+          plot_img_bbox(filename=filename, plot_df=pred_df, arg_list=arg_list)
         }
         
         # write metadata tags
