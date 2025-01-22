@@ -192,13 +192,10 @@ update_img_list <- function(results, model_version, file_list){
 save_checkpoint <- function(predictions_list, score_threshold,
                             bboxes, output_dir, model_version,
                             get_metadata, write_bbox_csv, results, final) {
- 
-   # filter df by score_threshold
-  full_df <- apply_score_threshold(predictions_list, score_threshold)
   
   # write bounding box file
   if(write_bbox_csv){
-    bbox_df <- write_bbox_df(full_df, bboxes, score_threshold)
+    bbox_df <- write_bbox_df(predictions_list, bboxes)
     if(final){
       utils::write.csv(bbox_df, fs::path(output_dir, paste(model_version, "predicted_bboxes", sep="_"), ext="csv"), 
                        row.names=FALSE)
@@ -210,11 +207,10 @@ save_checkpoint <- function(predictions_list, score_threshold,
       utils::write.csv(bbox_df, fs::path(output_dir, paste(model_version, "predicted_bboxes_checkpoint", sep="_"), ext="csv"), 
                        row.names=FALSE)
     }
-
   }
   
   # convert to output format
-  df_out <- write_output(full_df)
+  df_out <- aggregate_counts(predictions_list)
   
   # extract metadata if requested
   if(get_metadata){
