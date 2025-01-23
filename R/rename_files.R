@@ -35,7 +35,7 @@ rename_files <- function(img_dir,
   
   # make new filenames
   df <- dplyr::mutate(df, image_id_new = paste(project_id, site_id, camera_id, image_id_old, sep="_"))
-  df <- dplyr::mutate(df, filepath_new = file.path(paste(img_dir, image_id_new, sep = "/")))
+  df <- dplyr::mutate(df, filepath_new = fs::path(img_dir, image_id_new))
   
   # print starting message
   cat(paste0("Renaming all images in ", img_dir, 
@@ -43,16 +43,17 @@ rename_files <- function(img_dir,
   
   
   # initiate progress bar to track renaming
-  pb <- txtProgressBar(min = 0, max = nrow(df))
+  # pb <- txtProgressBar(min = 0, max = nrow(df))
   
   # rename files
-  for(i in 1:nrow(df)){
-    setTxtProgressBar(pb, i)
-    file.rename(df$filepath_old[i], df$filepath_new[i])
-  }
+  # for(i in 1:nrow(df)){
+  #   setTxtProgressBar(pb, i)
+  #   file.rename(df$filepath_old[i], df$filepath_new[i])
+  # }
+  fs::move(df$filepath_old, df$filepath_new)
   
   # close progress bar
-  close(pb)
+  # close(pb)
   
   # print message
   cat("All done!\n")

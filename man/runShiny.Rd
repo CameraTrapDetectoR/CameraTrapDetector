@@ -4,7 +4,7 @@
 \alias{runShiny}
 \title{A wrapper function to run Shiny Apps from \code{CameraTrapDetectoR}.}
 \usage{
-runShiny(app = "deploy")
+runShiny()
 }
 \arguments{
 \item{app}{The name of the app you want to run. The options are currently 

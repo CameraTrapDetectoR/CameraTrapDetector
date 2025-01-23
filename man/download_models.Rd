@@ -4,7 +4,7 @@
 \alias{download_models}
 \title{Download model files.}
 \usage{
-download_models(models = "species_v2")
+download_models(models)
 }
 \arguments{
 \item{models}{user-specified model or list of models. Defaults to 

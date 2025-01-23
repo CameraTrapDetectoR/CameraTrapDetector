@@ -140,12 +140,12 @@ camelot_bulk_import <- function(df, project_df, Camera_Name = "Camera_Name",
   
   # save file if requested
   if(output_dir != "None"){
-    if(!dir.exists(output_dir)){
-      tryCatch( {dir.create(output_dir)}, error = function(e) {
+    if(!fs::dir_exists(output_dir)){
+      tryCatch( {fs::dir_create(output_dir)}, error = function(e) {
         stop(paste0(output_dir, " is not, nor can it be made, into a valid directory."))
       })
     }
-    data.table::fwrite(camelot_df, file.path(output_dir, "camelot_bulk_import.csv"))
+    data.table::fwrite(camelot_df, fs::path(output_dir, "camelot_bulk_import", ext="csv"))
   }
   
   return(camelot_df)

@@ -3,7 +3,7 @@
 \docType{data}
 \name{preds}
 \alias{preds}
-\title{CameraTrapDetectoR example set data}
+\title{preds}
 \format{
 ## `preds`
 A data frame with 33 rows and 17 columns:
@@ -19,11 +19,6 @@ A data frame with 33 rows and 17 columns:
 preds
 }
 \description{
-Data frames related to the example_set image folder used in function examples
-}
-\details{
-preds
-
 example_set image predictions from the "species_v2" model
 }
 \keyword{datasets}

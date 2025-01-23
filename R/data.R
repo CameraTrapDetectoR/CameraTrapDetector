@@ -1,7 +1,21 @@
-#' CameraTrapDetectoR example set data
+#' CameraTrapDetectoR  data
 #' 
-#' Data frames related to the example_set image folder used in function examples
+#' species.extent.data
 #' 
+#' Location polygons detailing range data for each species across taxonomic level in the models
+#' 
+#' @format ##`species.extent.data`
+#' a data frame with 120397 rows and 7 columns
+#' \describe{
+#'  \item{taxa}{taxonomic level}
+#'  \item{label}{label name}
+#'  \item{model_type}{model type}
+#'  \item{xmin}{xmin of polygon}
+#'  \item{ymin}{ymin of polygon}
+#'  \item{xmax}{xmax of polygon}
+#'  \item{ymax}{ymax of polygon}
+#'}
+"species.extent.data"
 #' 
 #' preds
 #' 

@@ -14,7 +14,7 @@ get_possible_species(location, extent.data, model_type)
 \item{model_type}{model type or version to pull class dict labels}
 }
 \value{
-possible species list
+possible class label list
 }
 \description{
 Evaluate user-provided latitude / longitude values with range

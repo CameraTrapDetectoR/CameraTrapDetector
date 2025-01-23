@@ -10,11 +10,8 @@
 
 get_samples <- function(){
   
-  # get dir to sample images
-  img_dir <- system.file("extdata", package = "CameraTrapDetectoR")
-  
-  # define absolute path to example folder
-  path2images <- paste(img_dir, dir(img_dir), sep = "/")
+  # get path to sample images
+  path2images <- fs::path_package("extdata", "example_set.zip", package = "CameraTrapDetectoR")
   
   # set cache destination
   dest_dir <- rappdirs::user_cache_dir("CameraTrapDetector")

@@ -30,35 +30,33 @@ sort_images <- function(results = NULL, output_dir = NULL,
                         remove_originals = FALSE){
   
   # define output_dir; create it if it doesn't exist
-  if(!dir.exists(output_dir)){
-    dir.create(output_dir)
+  if(!fs::dir_exists(output_dir)){
+    fs::dir_create(output_dir)
   }
   
   # create folders within output dir based on results classes
   classes <- unique(results$prediction)
-  for(i in 1:length(classes)){
-    # create class dir
-    dir.create(paste(output_dir, classes[i], sep="/"))
+  fs::dir_create(output_dir, classes)
     
-    # make manual review folders
-    if(review_threshold > 0){
-      dir.create(paste(output_dir, classes[i], "manual_review", sep="/"))
-    }
+  # make manual review folders
+  if(review_threshold > 0){
+    fs::dir_create(output_dir, classes, "manual_review")
+  }
     
-    # make count folders
-    if(count_subdir){
-      # filter results to a given class
-      res_class <- results[results$class == class[i]]
-      # get unique counts for that class
-      counts <- sort(unique(res_class$count))
-      for(ct in 1:length(counts)){
-        dir.create(paste(output_dir, classes[i], counts[ct], sep="/"))
-      }
-    }
+  # make count folders
+  if(count_subdir){
+    # filter results to a given class
+    res_class <- results[results$class == class[i]]
+    # get unique counts for that class
+    counts <- sort(unique(res_class$count))
+    fs::dir_create(output_dir, classes, counts)
   }
 
-  # create placeholder vector for new file paths
-  new_filename <- rep(NA, nrow(results))
+  # create new image name
+  results$filename <- fs::path(results$filename)
+  results <- dplyr::mutate(results,
+                           new_name = paste(stringr::str_split_i(filename, "/", -2),
+                                            stringr::str_split_i(filename, "/", -1), sep="_"))
   
   # loop through results and transfer files 
   for(i in 1:nrow(results)){
@@ -86,7 +84,7 @@ sort_images <- function(results = NULL, output_dir = NULL,
     }
     
     # copy image to new location
-    file.copy(old_loc, new_loc)
+    fs::file_move(old_loc, new_loc)
     
     # update new filename column
     new_filename[i] <- new_loc

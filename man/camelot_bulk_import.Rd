@@ -4,7 +4,13 @@
 \alias{camelot_bulk_import}
 \title{Camelot bulk import}
 \usage{
-camelot_bulk_import(df, project_df, CameraName, score_threshold)
+camelot_bulk_import(
+  df,
+  project_df,
+  Camera_Name = "Camera_Name",
+  score_threshold = 0,
+  output_dir = "None"
+)
 }
 \arguments{
 \item{df}{output of CameraTrapDetectoR `deploy_model` function. The file_path column must match the local
@@ -12,14 +18,17 @@ paths to your images. If you did not extract image metadata while running the mo
 
 \item{project_df}{name of dataframe with required camelot fields.}
 
-\item{CameraName}{required column in project_df corresponding to unique camera name, with one row per camera. This marker must correspond to a character substring
+\item{Camera_Name}{required column in project_df corresponding to unique camera name, with one row per camera. This marker must correspond to a character substring
 of the filename in your CameraTrapDetectoR model output.}
 
 \item{score_threshold}{recode any predictions below score threshold as empty.
 Takes values between 0 and 1. Default is not to adjust any predictions}
+
+\item{output_dir}{character string pointing to directory where you want the .csv file saved.
+If left blank, the function will just return the dataframe to your R environment}
 }
 \value{
-data frame formatted for import to Camelot
+data frame formatted for import to Camelot, preserving all information from both dataframes in one file.
 }
 \description{
 Format CameraTrapDetectoR results for bulk import into Camelot

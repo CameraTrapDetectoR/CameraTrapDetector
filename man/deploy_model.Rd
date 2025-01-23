@@ -6,20 +6,19 @@
 \usage{
 deploy_model(
   data_dir = NULL,
+  output_dir = NULL,
   model_type = "species",
-  recursive = TRUE,
+  recurse = TRUE,
   file_extensions = c(".jpg"),
   make_plots = TRUE,
-  plot_label = TRUE,
-  output_dir = NULL,
   sample50 = FALSE,
   write_bbox_csv = FALSE,
-  score_threshold = 0.6,
+  score_threshold = 0.2,
   overlap_correction = TRUE,
-  overlap_threshold = 0.9,
+  overlap_threshold = 0.5,
   get_metadata = TRUE,
-  write_metadata = TRUE,
-  review_threshold = 1,
+  write_metadata = FALSE,
+  review_threshold = 0.8,
   checkpoint_frequency = 10,
   latitude = NA,
   longitude = NA,
@@ -33,6 +32,11 @@ deploy_model(
 \arguments{
 \item{data_dir}{Absolute path to the folder containing your images}
 
+\item{output_dir}{You can specify absolute path to output. Default is `NULL`,
+and creates a folder within your data_dir. If you are resuming evaluation from a checkpoint,
+put the  full path to the desired prediction directory here. 
+All previous model arguments will also be loaded and do not need to be specified again.}
+
 \item{model_type}{Options are 'general', 'species', 'family', or 'pig_only' 
 with appropriate version appended with an underscore. For example, to use the version 1 species model,
 list `model_type` as "species_v1". Specifying a model type without a version appended will default to
@@ -40,7 +44,7 @@ the latest version of that model available for your package vesion.
 A full list of available models and details is available 
 on the CameraTrapDetectoR Github wiki.}
 
-\item{recursive}{boolean. Do you have images in subfolders within your
+\item{recurse}{boolean. Do you have images in subfolders within your
 data_dir that you want to analyze, if so, set to TRUE. If you only want to 
 analyze images within your data_dir and not within sub-folders, set to FALSE.}
 
@@ -49,13 +53,6 @@ Accepts the following file types: ".jpg", ".png", ".tif", ".pdf". Default is ".j
 
 \item{make_plots}{boolean. Do you want to make plots of the images with
 their predicted bounding boxes?}
-
-\item{plot_label}{boolean. Do you want the plots to contain the predicted
-class of object}
-
-\item{output_dir}{You can specify absolute path to output. Default is `NULL`,
-and creates a folder within your data_dir. Only specify a path if you want the
-results stored somewhere else on your computer.}
 
 \item{sample50}{boolean. Do you want to run the model only on a subset of 
 50 images from your dataset? This is a good idea if you are experimenting 

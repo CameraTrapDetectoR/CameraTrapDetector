@@ -8,7 +8,7 @@
 #' @param extent.data auxiliary location database
 #' @param model_type model type or version to pull class dict labels
 #' 
-#' @returns possible species list
+#' @returns possible class label list
 #' 
 #' @import dplyr
 #' @export
@@ -58,4 +58,25 @@ get_possible_species <- function(location, extent.data, model_type){
                                  label = tools::toTitleCase(label))
   
   return(possible.labels)
-}#END Function
+}#END
+
+
+#' Determine if location falls within a species range
+#' 
+#' @description Evaluate if a location (latitude / longitude) is within a geographic 
+#' extent. Helper function for `get_possible_species`
+#' 
+#' @param location dataframe containing a single longitude and latitude value
+#' @param extent.values dataframe containing xmin, xmax, ymin, ymax representing an extent (bounding box)
+#'
+#' @returns location extent helper function
+#' 
+#' @export
+#' 
+location_contained_in_extent<-function(location, extent.values){
+  
+  return((location$longitude > extent.values$xmin &
+            location$longitude < extent.values$xmax &
+            location$latitude > extent.values$ymin &
+            location$latitude < extent.values$ymax))
+}

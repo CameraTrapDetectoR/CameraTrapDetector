@@ -16,7 +16,7 @@ write_metadata_tags <- function(pred_df, model_version, review_threshold){
   tryCatch( { exiftoolr::exif_version() }, error = function(e) {exiftoolr::install_exiftool()})
   
   # define path config file
-  config_file = system.file("extdata", "cameratrapdetector_metadata.cfg", package = "CameraTrapDetectoR")
+  config_file = fs::path_package("extdata", "cameratrapdetector_metadata.cfg", package = "CameraTrapDetectoR")
   
   # use model version to define tags
   if(model_version == "species_v1"){

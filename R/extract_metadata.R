@@ -42,7 +42,7 @@ extract_metadata <- function(files){
   
   # bulk col values
   # add filepath
-  meta_df$filename <- normalizePath(dat$SourceFile, winslash = "/")
+  meta_df$filename <- fs::path_norm(dat$SourceFile)
   
   # add image name
   meta_df$ImageName <- dat$FileName
