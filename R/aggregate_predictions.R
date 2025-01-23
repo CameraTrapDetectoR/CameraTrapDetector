@@ -25,16 +25,6 @@
 #' 
 #' @examples 
 #' 
-#' # directory-generated sequences
-#' data(preds)
-#' data_dir <- get_samples()
-#' seq_preds <- generate_sequences(data_dir, c("example_set"), 5, 300)
-#' agg_preds <- aggregate_predictions(preds, seq_preds) # directory-generated sequences
-#' 
-#' # metadata-generated sequences
-#' data(preds)
-#' meta_df <- extract_metadata(preds$filename)
-#' agg_preds <- aggregate_predictions(preds, meta_df) 
 #' 
 #' @export
 #' 
