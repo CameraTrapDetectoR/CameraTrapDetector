@@ -111,8 +111,8 @@ download_models <- function(models)
       }
       
       # download and unzip model files
-      utils::download.file(url=agdata, destfile=path, quiet=TRUE)
-      tryCatch(usethis::use_zip(agdata, destdir = cache_path, cleanup=F), 
+      # utils::download.file(url=agdata, destfile=path, quiet=TRUE)
+      tryCatch(usethis::use_zip(agdata, destdir = cache_path, cleanup=T), 
                error = function(e) {utils::unzip(path, exdir = cache_path)})
       
       # once we confirm download, remove zip file if it is still there
