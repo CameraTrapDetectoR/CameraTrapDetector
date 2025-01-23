@@ -57,9 +57,9 @@ plot_img_bbox <- function(filename, plot_df, arg_list){
       graphics::segments(x0=plot_df$XMax[i], y0=plot_df$YMax[i],
                          x1=plot_df$XMax[i], y1=plot_df$YMin[i], 
                          col=arg_list$col, lty=arg_list$lty, lwd=arg_list$lwd)
-      graphics::text(x= plot_df$XMin[i]+6, y=plot_df$YMax[i]-10, 
+      graphics::text(x= plot_df$XMin[i]+6, y=plot_df$YMin[i]-10, 
                      paste0(plot_df$prediction[i], " = ", round(plot_df$confidence_score[i], 2)),
-                     col=arg_list$col, adj=0, cex = 1.6)
+                     col=arg_list$col, adj=0, cex = 1.3)
     }
   }
   

@@ -121,8 +121,8 @@ deploy_model <- function(
     checkpoint_frequency = 10,
     latitude = NA,
     longitude = NA,
-    h=307,
-    w=408,
+    h=614,
+    w=816,
     lty=1,
     lwd=2, 
     col='red')
