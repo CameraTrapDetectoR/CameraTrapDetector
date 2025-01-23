@@ -14,7 +14,7 @@
 #' 
 #' @export
 #' 
-plot_img_bbox<- function(filename, plot_df, arg_list){
+plot_img_bbox <- function(filename, plot_df, arg_list){
   
   # read in image and resize to user specs
   filename_full <- dplyr::if_else(fs::file_exists(filename), filename, 
