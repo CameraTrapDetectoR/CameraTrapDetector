@@ -2,7 +2,7 @@
 #' 
 #' @description helper function for `deploy_model` to create bbox df for saving in checkpoint, csv
 #' 
-#' @param full_df prediction output from apply_score_threshold
+#' @param predictions_list list of current image predictions
 #' @param bboxes existing predicted boxes df
 #'
 #' @import dplyr

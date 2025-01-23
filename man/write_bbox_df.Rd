@@ -4,10 +4,10 @@
 \alias{write_bbox_df}
 \title{separate function to write bboxes to df}
 \usage{
-write_bbox_df(full_df, bboxes)
+write_bbox_df(predictions_list, bboxes)
 }
 \arguments{
-\item{full_df}{prediction output from apply_score_threshold}
+\item{predictions_list}{list of current image predictions}
 
 \item{bboxes}{existing predicted boxes df}
 }
