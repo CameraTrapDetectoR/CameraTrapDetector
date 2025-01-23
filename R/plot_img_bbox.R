@@ -24,7 +24,8 @@ plot_img_bbox <- function(filename, plot_df, arg_list){
   
   # strip filename and replace recursive dir structure with underscores
   file_strip <- stringr::str_remove(filename_full, arg_list$data_dir)
-  file_strip <- sub("^[^[:alnum:]]+",'', stringr::str_replace(file_strip, "/", "_"))
+  file_strip <- sub("^[^[:alnum:]]+",'', file_strip)
+  file_strip <- stringr::str_replace(file_strip, "/", "_")
   
   # substitue output dir for data dir in new filename
   output_nm <- fs::path(paste(arg_list$output_dir, file_strip, sep = "/"))
