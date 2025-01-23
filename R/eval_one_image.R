@@ -8,13 +8,12 @@
 #' @param score_threshold numeric. arg passed from `deploy_model` to filter low confidence predictions
 #' @param overlap_correction boolean. arg passed from `deploy_model` to apply non-maximum suppression
 #' @param overlap_threshold numeric. arg passed from `deploy_model`, IoU threshold for NMS
-#' @param location
-#' @param possible_labels
+#' @param location lat-lon input from users
+#' @param possible_labels output of possible classes present at given location
 #'
 #' @return pred_df data frame of formatted predictions for the image
 #' @export
 #'
-#' @examples
 eval_one_image <- function(input, filename, label_encoder, score_threshold,
                            overlap_correction, overlap_threshold,
                            location, possible_labels, model, model_version) {

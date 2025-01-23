@@ -10,7 +10,6 @@
 #' @return nms_df filtered df using non-maximum suppression
 #' @export
 #'
-#' @examples
 nms <- function(df, threshold, classwise=F) {
   
   # perform agnostic NMS
