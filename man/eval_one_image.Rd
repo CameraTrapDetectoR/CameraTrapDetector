@@ -13,7 +13,8 @@ eval_one_image(
   overlap_threshold,
   location,
   possible_labels,
-  model
+  model,
+  model_version
 )
 }
 \arguments{
