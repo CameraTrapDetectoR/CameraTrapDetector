@@ -19,6 +19,9 @@ write_bbox_df <- function(predictions_list, bboxes) {
   # combine new bboxes with any existing results
   bbox_df <- unique(rbind(bbox_df, bboxes))
   
+  # relocate columns
+  bbox_df <- dplyr::relocate(bbox_df, c(filename, prediction, confidence_score))
+  
   #return bbox df
   return(bbox_df)
   
