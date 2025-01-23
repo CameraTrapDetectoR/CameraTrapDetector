@@ -325,7 +325,6 @@ deploy_model <- function(
   df_out <- save_checkpoint(predictions_list, arg_list$score_threshold,
                             bboxes, output_dir, arg_list$model_version,
                             arg_list$get_metadata, arg_list$write_bbox_csv, results, final=T)
-
   
   cat(paste0("\nOutput can be found at: \n", fs::path_norm(output_dir), "\n",
              "The number of animals predicted in each category in each image is in the file: ", arg_list$model_version, "_model_predictions.csv\n"))
