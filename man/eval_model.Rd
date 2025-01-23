@@ -47,10 +47,3 @@ to a data frame with ground truth identifications. The final object returned is 
 overall and class-wise evaluation metrics for class identification at the image and/or
 sequence level, and optionally for counts at the image and/or sequence level.
 }
-\examples{
-# load predictions and annotations
-data(preds)
-data(labels)
-results <- eval_model(preds, labels, "filename", "true_class", "image")
-
-}

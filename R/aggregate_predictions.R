@@ -23,8 +23,6 @@
 #' 
 #' @import dplyr
 #' 
-#' @examples 
-#' 
 #' 
 #' @export
 #' 

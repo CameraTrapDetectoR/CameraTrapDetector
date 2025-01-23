@@ -137,16 +137,5 @@ data_dir <- get_samples()
 # specify only the data_dir, except all other default args
 df_gen <- deploy_model(data_dir = data_dir)
 
-# run species model at varying confidence score thresholds
-scores <- c(0.3, 0.5, 0.7)
-for(i in 1:length(scores)){
-deploy_model(data_dir = data_dir, model_type = 'species', score_threshold = scores[i])
-}
-
-# loop through each model
-data(models)
-for(i in 1:nrow(models)){
-deploy_model(data_dir = data_dir, model_type = models$model_name[i])
-}
  
 }

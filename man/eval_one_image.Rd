@@ -30,7 +30,9 @@ eval_one_image(
 
 \item{overlap_threshold}{numeric. arg passed from `deploy_model`, IoU threshold for NMS}
 
-\item{possible_labels}{}
+\item{location}{lat-lon input from users}
+
+\item{possible_labels}{output of possible classes present at given location}
 }
 \value{
 pred_df data frame of formatted predictions for the image

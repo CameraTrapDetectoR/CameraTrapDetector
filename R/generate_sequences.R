@@ -25,7 +25,6 @@
 #' @import stringr
 #' @import dplyr
 #' 
-#' @examples
 #' 
 #' @export
 generate_sequences <- function(data_dir = NULL, 

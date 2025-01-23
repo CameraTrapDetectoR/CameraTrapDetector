@@ -8,7 +8,6 @@
 #' @return list of two tensors image and target
 #' @export
 #'
-#' @examples
 get_model_input <- function(filename, model_version) {
   
   # load image file

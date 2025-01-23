@@ -25,12 +25,6 @@
 #' 
 #' @import dplyr
 #' 
-#' @examples 
-#' # load predictions and annotations
-#' data(preds)
-#' data(labels)
-#' results <- eval_model(preds, labels, "filename", "true_class", "image")
-#' 
 #' @export
 eval_model <- function(preds = NULL, data = NULL,
                        filepath = NULL, true_class = NULL, 
