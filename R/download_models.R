@@ -111,12 +111,15 @@ download_models <- function(models)
       }
       
       # download and unzip model files
-      #utils::download.file(url=agdata, destfile=path, quiet=TRUE)
-      tryCatch(usethis::use_zip(agdata, destdir = cache_path), 
+      utils::download.file(url=agdata, destfile=path, quiet=TRUE)
+      tryCatch(usethis::use_zip(agdata, destdir = cache_path, cleanup=T), 
                error = function(e) {utils::unzip(path, exdir = cache_path)})
       
-      # once we confirm download, remove zip file
-        file.remove(path)
+      # once we confirm download, remove zip file if it is still there
+      # NOTE: may not need this anymore with arg cleanup=T
+        if(fs::file_exists(path)) {
+          file.remove(path)
+        }
     }
     
     cat(paste0("Model files for model version ", model_i, " are downloaded and stored.\n\n"))
