@@ -330,6 +330,8 @@ deploy_model <- function(
   cat(paste0("\nOutput can be found at: \n", fs::path_norm(output_dir), "\n",
              "The number of animals predicted in each category in each image is in the file: ", arg_list$model_version, "_model_predictions.csv\n"))
   
+  # when loading from checkpoint, getting weird rowname output
+  df_out <- tibble::remove_rownames(df_out)
   
   # return output dataframe
   return(df_out)
