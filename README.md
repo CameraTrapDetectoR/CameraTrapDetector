@@ -14,11 +14,10 @@ Four types of models are available:
   1. a taxonomic **class** model that classifies objects as mammal or avian
   2. a taxonomic **family** model that recognizes mammal, avian, and reptile families
   3. a taxonomic **species** model that recognizes unique domestic and wild species including all North American wild cat species, bear species, and Canid species.
-  4. a **pig-only** model that recognizes wild pigs and classifies all other detections as not-pig
 
 The taxonomic models also include categories for vehicles and humans. All models include a category for empty images.  
 
-New model versions are trained iteratively over time. All finalized and verified models are available in the latest package version and can be specified by the user (e.g. "species_v1", "species_v2"). Each model + version is independently trained; different models can be run sequentially and treated as independent observers. Specifying only the model type (e.g. "species" or "family") will default to the latest model generation, currently **version 2**.
+New model versions are trained iteratively over time. All finalized and verified models are available in the latest package version and can be specified by the user (e.g. "species_v1", "species_v2"). Each model + version is independently trained; different models can be run sequentially and treated as independent observers. Specifying only the model type (e.g. "species" or "family") will default to the latest model generation. The latest version for the species model is currently **version 3**; the latest version for the family and general models is **version 2**.  
   
 
 
