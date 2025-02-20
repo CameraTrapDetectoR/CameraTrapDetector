@@ -84,6 +84,8 @@ This will launch a Shiny App on your computer. See the **Shiny Demo** vignette o
 ## Save your work  
 CameraTrapDetectoR allows you saves your results at a user-chosen frequency with the **checkpoint_frequency** argument of the **deploy_model** function; if something happens to your machine during the model run, the model's work will be preserved. To resume a previously-initiated model run, specify the folder where your results are stored as your **output_dir** argument. CameraTrapDetectoR will read in these results and run the model only on images that do not have existing results. To avoid errors, do not modify the contents of the results files or your **deploy_model** function arguments.
 
+## Run on command line  
+Using CameraTrapDetector on HPC or looking to optimize runtime? Explore our [command line deployment](https://github.com/CameraTrapDetectoR/CameraTrapDetectoR/wiki/command-line) instructions for step-by-step setup and run assistance.
 
 ## Citation
 
